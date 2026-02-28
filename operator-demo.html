@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lucky Star Casino — Operator Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0a1a;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    /* ===== OPERATOR SITE HEADER ===== */
+    .site-header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .site-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .site-logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+    .site-logo-text {
+      font-size: 18px; font-weight: 800;
+      background: linear-gradient(90deg, #f59e0b, #ef4444);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .site-nav {
+      display: flex; gap: 24px; align-items: center;
+    }
+    .site-nav a {
+      color: rgba(255,255,255,0.5); text-decoration: none;
+      font-size: 13px; font-weight: 500;
+      transition: color 0.2s;
+    }
+    .site-nav a:hover, .site-nav a.active { color: #fff; }
+    .site-user {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .site-balance {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 14px; font-weight: 600;
+    }
+    .site-balance span { color: #f59e0b; }
+    .site-avatar {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700;
+    }
+
+    /* ===== GAME CONTAINER ===== */
+    .game-wrapper {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .game-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .game-breadcrumb {
+      font-size: 13px; color: rgba(255,255,255,0.4);
+    }
+    .game-breadcrumb a { color: rgba(255,255,255,0.4); text-decoration: none; }
+    .game-breadcrumb a:hover { color: #fff; }
+    .game-breadcrumb .current { color: #f59e0b; }
+    
+    .game-controls {
+      display: flex; gap: 8px;
+    }
+    .game-btn {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 8px 16px;
+      color: rgba(255,255,255,0.7);
+      font-size: 12px; font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .game-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    .game-btn.danger { border-color: rgba(239,68,68,0.3); color: #ef4444; }
+    .game-btn.danger:hover { background: rgba(239,68,68,0.1); }
+
+    /* ===== IFRAME ===== */
+    .game-iframe-container {
+      width: 100%;
+      aspect-ratio: 16/9;
+      max-height: 80vh;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #000;
+      position: relative;
+    }
+    .game-iframe-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .game-loading {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 16px;
+      background: #0a0a1a;
+      z-index: 10;
+      transition: opacity 0.5s;
+    }
+    .game-loading.hidden { opacity: 0; pointer-events: none; }
+    .loading-spinner {
+      width: 40px; height: 40px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: #f59e0b;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { font-size: 14px; color: rgba(255,255,255,0.4); }
+
+    /* ===== EVENT LOG (debug panel) ===== */
+    .event-panel {
+      margin-top: 20px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .event-panel-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .event-panel-title {
+      font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.5);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .event-panel-title .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #22c55e;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .event-clear {
+      font-size: 11px; color: rgba(255,255,255,0.3);
+      cursor: pointer; background: none; border: none; font-family: inherit;
+    }
+    .event-clear:hover { color: #fff; }
+    .event-log {
+      max-height: 200px;
+      overflow-y: auto;
+      padding: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+    }
+    .event-entry {
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-bottom: 2px;
+      display: flex; gap: 8px;
+      align-items: flex-start;
+    }
+    .event-entry:hover { background: rgba(255,255,255,0.03); }
+    .event-time { color: rgba(255,255,255,0.2); white-space: nowrap; }
+    .event-name { font-weight: 600; white-space: nowrap; }
+    .event-name.ready { color: #22c55e; }
+    .event-name.start { color: #3b82f6; }
+    .event-name.win { color: #f59e0b; }
+    .event-name.loss { color: #ef4444; }
+    .event-name.balance { color: #8b5cf6; }
+    .event-data { color: rgba(255,255,255,0.4); word-break: break-all; }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      margin-top: 40px;
+      padding: 20px 24px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      text-align: center;
+      font-size: 11px;
+      color: rgba(255,255,255,0.15);
+    }
+
+    /* ===== STATUS BAR ===== */
+    .status-bar {
+      display: flex; gap: 16px; margin-top: 16px; flex-wrap: wrap;
+    }
+    .status-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 12px 20px;
+      flex: 1;
+      min-width: 140px;
+    }
+    .status-card-label {
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .status-card-value {
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .status-card-value.balance-val { color: #f59e0b; }
+    .status-card-value.win-val { color: #22c55e; }
+    .status-card-value.loss-val { color: #ef4444; }
+    .status-card-value.games-val { color: #8b5cf6; }
+
+    @media (max-width: 768px) {
+      .site-nav { display: none; }
+      .game-wrapper { padding: 12px; }
+      .game-iframe-container { aspect-ratio: auto; height: 70vh; }
+      .status-bar { gap: 8px; }
+      .status-card { padding: 8px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== SITO DELL'OPERATORE (simulato) ===== -->
+  <header class="site-header">
+    <div class="site-logo">
+      <div class="site-logo-icon">&#9733;</div>
+      <div class="site-logo-text">LUCKY STAR CASINO</div>
+    </div>
+    <nav class="site-nav">
+      <a href="#">Home</a>
+      <a href="#">Slots</a>
+      <a href="#" class="active">Originals</a>
+      <a href="#">Live Casino</a>
+      <a href="#">Promotions</a>
+    </nav>
+    <div class="site-user">
+      <div class="site-balance">
+        <span>$</span><span id="headerBalance">500.00</span>
+      </div>
+      <div class="site-avatar">MR</div>
+    </div>
+  </header>
+
+  <div class="game-wrapper">
+    <!-- Breadcrumb -->
+    <div class="game-topbar">
+      <div class="game-breadcrumb">
+        <a href="#">Home</a> / <a href="#">Originals</a> / <span class="current">Mines</span>
+      </div>
+      <div class="game-controls">
+        <button type="button" class="game-btn" onclick="toggleFullscreen()">&#x26F6; Fullscreen</button>
+        <button type="button" class="game-btn" onclick="refreshSession()">&#x21bb; New Session</button>
+        <button type="button" class="game-btn danger" onclick="closeSession()">&#x2715; Close</button>
+      </div>
+    </div>
+
+    <!-- IFRAME DEL GIOCO -->
+    <div class="game-iframe-container" id="gameContainer">
+      <div class="game-loading" id="gameLoading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading Mines...</div>
+      </div>
+      <iframe id="gameIframe" allow="autoplay"></iframe>
+    </div>
+
+    <!-- STATUS CARDS -->
+    <div class="status-bar">
+      <div class="status-card">
+        <div class="status-card-label">Player Balance (Operator DB)</div>
+        <div class="status-card-value balance-val" id="cardBalance">$500.00</div>
+      </div>
+      <div class="status-card">
+        <div class="status-card-label">Session Profit</div>
+        <div class="status-card-value win-val" id="cardProfit">$0.00</div>
+      </div>
+      <div class="status-card">
+        <div class="status-card-label">Games Played</div>
+        <div class="status-card-value games-val" id="cardGames">0</div>
+      </div>
+      <div class="status-card">
+        <div class="status-card-label">Session Status</div>
+        <div class="status-card-value" id="cardStatus" style="color:#22c55e;">Active</div>
+      </div>
+    </div>
+
+    <!-- WALLET CONTROLS (operator-side) -->
+    <div class="event-panel" style="margin-top:12px;">
+      <div class="event-panel-header">
+        <div class="event-panel-title">
+          <div class="dot" style="background:#f59e0b;"></div>
+          Operator Wallet Controls
+        </div>
+        <span style="font-size:11px;color:rgba(255,255,255,0.3);">Simulates your casino's wallet system</span>
+      </div>
+      <div style="padding:12px 16px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+        <button type="button" class="game-btn" onclick="operatorAddFunds(100)">+ $100</button>
+        <button type="button" class="game-btn" onclick="operatorAddFunds(500)">+ $500</button>
+        <button type="button" class="game-btn" onclick="operatorAddFunds(1000)">+ $1000</button>
+        <button type="button" class="game-btn danger" onclick="operatorSetBalance(0)">Set $0</button>
+        <span style="font-size:11px; color:rgba(255,255,255,0.3); margin-left:8px;">
+          These buttons call POST /operator/session/:id/balance — same API your backend would use
+        </span>
+      </div>
+    </div>
+
+    <!-- EVENT LOG -->
+    <div class="event-panel">
+      <div class="event-panel-header">
+        <div class="event-panel-title">
+          <div class="dot"></div>
+          postMessage Event Log
+        </div>
+        <button type="button" class="event-clear" onclick="clearLog()">Clear</button>
+      </div>
+      <div class="event-log" id="eventLog">
+        <div class="event-entry">
+          <span class="event-time">--:--:--</span>
+          <span class="event-name ready">SYSTEM</span>
+          <span class="event-data">Waiting for game to load...</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-footer">
+      Lucky Star Casino &copy; 2026 — This is a demo operator page showing iframe integration.
+      The game runs on a separate server and communicates via postMessage.
+    </div>
+  </div>
+
+  <script>
+    // ===================================================================
+    //  QUESTO E' IL CODICE CHE L'OPERATORE SCRIVE NEL SUO SITO
+    //  Simula il backend + frontend dell'operatore
+    // ===================================================================
+
+    const API_BASE   = 'http://localhost:4000';
+    const API_KEY    = 'demo-api-key-change-me';
+    const PLAYER_ID  = 'player_mario_42';
+    const INITIAL_BALANCE = 500;
+
+    let currentSessionId = null;
+    let currentToken     = null;
+    let gamesPlayed      = 0;
+    let initialBalance   = INITIAL_BALANCE;
+
+    // ── 1. L'operatore crea la sessione dal suo backend ──
+    async function createSession() {
+      document.getElementById('gameLoading').classList.remove('hidden');
+      document.getElementById('gameIframe').src = '';
+
+      try {
+        const res = await fetch(API_BASE + '/operator/session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-API-Key': API_KEY
+          },
+          body: JSON.stringify({
+            playerId: PLAYER_ID,
+            balance: INITIAL_BALANCE
+          })
+        });
+        const data = await res.json();
+        
+        if (!res.ok) {
+          logEvent('ERROR', 'error', 'Session creation failed: ' + data.error);
+          return;
+        }
+
+        currentToken     = data.token;
+        currentSessionId = data.sessionId;
+
+        logEvent('SESSION', 'ready', 
+          `Created session ${data.sessionId.substring(0,12)}... | Balance: $${INITIAL_BALANCE}`);
+
+        // ── 2. Mette il gioco nell'iframe ──
+        const gameUrl = API_BASE + data.gameUrl;
+        document.getElementById('gameIframe').src = gameUrl;
+
+        logEvent('IFRAME', 'start', `Loading ${gameUrl.substring(0,60)}...`);
+
+      } catch (e) {
+        logEvent('ERROR', 'error', 'Network error: ' + e.message);
+      }
+    }
+
+    // ── 3. Ascolta gli eventi postMessage dal gioco ──
+    window.addEventListener('message', function(e) {
+      if (!e.data || e.data.source !== 'mines-game') return;
+
+      const { event, data } = e.data;
+
+      switch (event) {
+        case 'game_ready':
+          document.getElementById('gameLoading').classList.add('hidden');
+          logEvent('READY', 'ready', `Game loaded! Balance: $${data.balance}`);
+          updateBalance(data.balance);
+          break;
+
+        case 'game_start':
+          gamesPlayed++;
+          logEvent('START', 'start', `Bet: $${data.bet} | Mines: ${data.mines}`);
+          document.getElementById('cardGames').textContent = gamesPlayed;
+          break;
+
+        case 'game_win':
+          logEvent('WIN', 'win', 
+            `+$${data.payout.toFixed(2)} (${data.multiplier.toFixed(2)}x) | Balance: $${data.balance.toFixed(2)}`);
+          updateBalance(data.balance);
+          break;
+
+        case 'game_loss':
+          logEvent('LOSS', 'loss', 
+            `-$${data.bet.toFixed(2)} | Balance: $${data.balance.toFixed(2)}`);
+          updateBalance(data.balance);
+          break;
+
+        case 'balance_update':
+          updateBalance(data.balance);
+          break;
+
+        case 'game_close':
+          logEvent('CLOSE', 'loss', `Game closed. Final balance: $${data.balance.toFixed(2)}`);
+          break;
+      }
+    });
+
+    function updateBalance(balance) {
+      document.getElementById('headerBalance').textContent = balance.toFixed(2);
+      document.getElementById('cardBalance').textContent = '$' + balance.toFixed(2);
+      const profit = balance - initialBalance;
+      const profitEl = document.getElementById('cardProfit');
+      profitEl.textContent = (profit >= 0 ? '+' : '') + '$' + profit.toFixed(2);
+      profitEl.className = 'status-card-value ' + (profit >= 0 ? 'win-val' : 'loss-val');
+    }
+
+    // ── Chiudi sessione (operatore chiude il gioco) ──
+    async function closeSession() {
+      if (!currentSessionId) return;
+      try {
+        const res = await fetch(API_BASE + '/operator/session/' + currentSessionId + '/close', {
+          method: 'POST',
+          headers: { 'X-API-Key': API_KEY }
+        });
+        const data = await res.json();
+        logEvent('CLOSED', 'loss', 
+          `Session closed. Final: $${data.finalBalance} | Bet: $${data.totalBet} | Won: $${data.totalWon} | Games: ${data.gamesPlayed}`);
+        document.getElementById('cardStatus').textContent = 'Closed';
+        document.getElementById('cardStatus').style.color = '#ef4444';
+        document.getElementById('gameIframe').src = '';
+        currentSessionId = null;
+        currentToken = null;
+      } catch (e) {
+        logEvent('ERROR', 'error', e.message);
+      }
+    }
+
+    function refreshSession() {
+      gamesPlayed = 0;
+      document.getElementById('cardGames').textContent = '0';
+      document.getElementById('cardStatus').textContent = 'Active';
+      document.getElementById('cardStatus').style.color = '#22c55e';
+      createSession();
+    }
+
+    function toggleFullscreen() {
+      const container = document.getElementById('gameContainer');
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        container.requestFullscreen().catch(() => {});
+      }
+    }
+
+    // ── Event Log ──
+    function logEvent(name, type, data) {
+      const log = document.getElementById('eventLog');
+      const now = new Date();
+      const time = now.toTimeString().substring(0, 8);
+      const entry = document.createElement('div');
+      entry.className = 'event-entry';
+      
+      const typeClass = {
+        'ready': 'ready', 'start': 'start', 'win': 'win',
+        'loss': 'loss', 'balance': 'balance', 'error': 'loss'
+      }[type] || '';
+      
+      entry.innerHTML = `
+        <span class="event-time">${time}</span>
+        <span class="event-name ${typeClass}">${name}</span>
+        <span class="event-data">${data}</span>
+      `;
+      log.appendChild(entry);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function clearLog() {
+      document.getElementById('eventLog').innerHTML = '';
+    }
+
+    // ── Wallet Controls (operator side) ──
+    async function operatorAddFunds(amount) {
+      if (!currentSessionId) { logEvent('ERROR', 'error', 'No active session'); return; }
+      try {
+        // Leggi saldo attuale
+        const infoRes = await fetch(API_BASE + '/operator/session/' + currentSessionId, {
+          headers: { 'X-API-Key': API_KEY }
+        });
+        const info = await infoRes.json();
+        const newBalance = Math.round((info.balance + amount) * 100) / 100;
+
+        const res = await fetch(API_BASE + '/operator/session/' + currentSessionId + '/balance', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
+          body: JSON.stringify({ balance: newBalance })
+        });
+        const data = await res.json();
+        logEvent('WALLET', 'balance', `Operator added $${amount} → New balance: $${data.balance}`);
+        updateBalance(data.balance);
+
+        // Notifica l'iframe di fare refresh del saldo
+        const iframe = document.getElementById('gameIframe');
+        if (iframe.contentWindow) {
+          iframe.contentWindow.postMessage({ target: 'mines-game', action: 'refresh_balance' }, '*');
+        }
+      } catch (e) {
+        logEvent('ERROR', 'error', 'Wallet update failed: ' + e.message);
+      }
+    }
+
+    async function operatorSetBalance(amount) {
+      if (!currentSessionId) { logEvent('ERROR', 'error', 'No active session'); return; }
+      try {
+        const res = await fetch(API_BASE + '/operator/session/' + currentSessionId + '/balance', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
+          body: JSON.stringify({ balance: amount })
+        });
+        const data = await res.json();
+        logEvent('WALLET', 'loss', `Operator set balance to $${data.balance}`);
+        updateBalance(data.balance);
+
+        const iframe = document.getElementById('gameIframe');
+        if (iframe.contentWindow) {
+          iframe.contentWindow.postMessage({ target: 'mines-game', action: 'refresh_balance' }, '*');
+        }
+      } catch (e) {
+        logEvent('ERROR', 'error', 'Wallet update failed: ' + e.message);
+      }
+    }
+
+    // ── Auto-start ──
+    createSession();
+  </script>
+</body>
+</html>

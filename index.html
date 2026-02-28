@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="occ-favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./vars.css">
+  <link rel="stylesheet" href="./style.css">
+  
+  <style>
+   a, button, input, select, h1, h2, h3, h4, h5, * {
+       box-sizing: border-box;
+       margin: 0;
+       padding: 0;
+       border: none;
+       text-decoration: none;
+       background: none;
+       -webkit-font-smoothing: antialiased;
+   }
+   menu, ol, ul {
+       list-style-type: none;
+       margin: 0;
+       padding: 0;
+   }
+  </style>
+  <title>Mines</title>
+</head>
+<body>
+  <div class="desktop-2">
+    <div class="header-bar">
+      <div class="header-left">
+        <div class="rectangle-30" onclick="history.back()" style="cursor:pointer;">
+          <img class="vector" src="vector0.svg" alt="back" style="width:9px;height:16px;">
+        </div>
+        <div class="frame-2">
+          <img class="union" src="union0.svg" alt="mines icon" />
+          <div class="playing-mines">
+            <span>
+              <span class="playing-mines-span">PLAYING</span>
+              <span class="playing-mines-span2"> </span>
+              <span class="playing-mines-span3">MINES</span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="provably-fair-wrapper" onclick="openModal()" style="cursor:pointer;">
+          <img class="ic-round-verified-user" src="ic-round-verified-user0.svg" alt="verified" />
+          <div class="provably-fair">Provably fair</div>
+        </div>
+        <div class="rectangle-29" onclick="toggleSound()" style="cursor:pointer;">
+          <div class="lets-icons-sound-max-fill">
+            <img class="group" src="group0.svg" alt="sound" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="sidebar-panel">
+        <div class="rectangle-5">
+          <div class="balance-row">
+            <div class="balance-label">
+              <img class="fa-7-solid-wallet" src="fa-7-solid-wallet0.svg" alt="wallet" />
+              <div class="balance">Balance</div>
+            </div>
+            <div class="balance-right">
+              <div class="_2304-94">
+                <span>
+                  <span class="_2304-94-span">$</span>
+                  <span class="_2304-94-span2" id="balanceDisplay">1,000.00</span>
+                </span>
+              </div>
+              <div class="balance-reset-btn" onclick="resetBalance()" title="Reset balance to 1000">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15A9 9 0 1 1 21 12"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="toggle-wrapper">
+            <div class="rectangle-8">
+              <div class="rectangle-9 tab-btn active" id="tabManual" onclick="switchMode('manual')">
+                <div class="manual">Manual</div>
+              </div>
+              <div class="auto-side tab-btn" id="tabAuto" onclick="switchMode('auto')">
+                <div class="auto">Auto</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-group">
+            <div class="bet-amount">Bet Amount</div>
+            <div class="rectangle-10">
+              <div class="bet-input-wrapper">
+                <span class="dollar-sign">$</span>
+                <input id="betInput" class="bet-input-field" type="number" value="1.00" placeholder="0.00" min="0.01" step="0.01">
+              </div>
+              <div class="bet-modifiers">
+                <div class="bet-mod-btn" onclick="halveBet()">1/2</div>
+                <div class="bet-mod-btn" onclick="doubleBet()">2x</div>
+                <div class="bet-mod-btn" onclick="setBetMax()">Max</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-group">
+            <div class="size-label">Size</div>
+            <div class="size-selector">
+              <div class="size-btn-wrapper">
+                <div class="size-btn active" data-size="25" onclick="setGridSize(25)">25</div>
+              </div>
+              <div class="size-btn-wrapper">
+                <div class="size-btn" data-size="36" onclick="setGridSize(36)">36</div>
+              </div>
+              <div class="size-btn-wrapper">
+                <div class="size-btn" data-size="49" onclick="setGridSize(49)">49</div>
+              </div>
+              <div class="size-btn-wrapper">
+                <div class="size-btn" data-size="64" onclick="setGridSize(64)">64</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-group">
+            <div class="mines-label-row">
+              <div class="mines-icon-label">
+                <img class="union2" src="union1.svg" alt="mines" />
+                <div class="mines">Number of Mines</div>
+              </div>
+              <div class="_32" id="mineCountDisplay">1</div>
+            </div>
+            <div class="rectangle-112">
+              <div class="slider-track">
+                <div class="rectangle-19">
+                  <img class="slider-icon-gem" src="livello-51.svg" alt="" />
+                  <div class="_17" id="sliderMinLabel">1</div>
+                </div>
+                <div class="rectangle-17">
+                  <div class="rectangle-18" id="sliderThumb"></div>
+                  <div class="slider-fill" id="sliderFill"></div>
+                  <input id="mineSlider" class="slider-input-range" type="range" min="1" max="24" value="1">
+                </div>
+                <div class="rectangle-26">
+                  <img class="slider-icon-mine" src="livello-11.svg" alt="" />
+                  <div class="_8" id="sliderMaxLabel">24</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="quick-bet-row">
+            <div class="rectangle-21 quick-btn" onclick="setMinePreset(1)">
+              <div class="mine-preset-text">1</div>
+            </div>
+            <div class="rectangle-22 quick-btn" onclick="setMinePreset(3)">
+              <div class="mine-preset-text">3</div>
+            </div>
+            <div class="rectangle-23 quick-btn" onclick="setMinePreset(5)">
+              <div class="mine-preset-text">5</div>
+            </div>
+            <div class="rectangle-24 quick-btn" onclick="setMinePreset(10)">
+              <div class="mine-preset-text">10</div>
+            </div>
+            <div class="rectangle-25 quick-btn" onclick="setMinePreset('max')">
+              <div class="mine-preset-text">Max</div>
+            </div>
+          </div>
+
+          <div id="autobetSettings" class="autobet-settings">
+            <div class="autobet-row">
+              <span class="autobet-label">Rounds</span>
+              <input type="number" id="autobetRounds" class="autobet-input" value="10" min="1" max="999">
+            </div>
+            <div class="autobet-row">
+              <span class="autobet-label">Cashout at</span>
+              <input type="number" id="autobetCashout" class="autobet-input" value="1.50" min="1.01" step="0.01">
+            </div>
+            <div class="autobet-row">
+              <span class="autobet-label">On Win</span>
+              <select id="autobetOnWin" class="autobet-select" onchange="toggleWinSlider()">
+                <option value="reset">Reset</option>
+                <option value="increase">Increase</option>
+                <option value="decrease">Decrease</option>
+              </select>
+            </div>
+            <div id="winSliderRow" class="autobet-slider-row" style="display:none;">
+              <input type="range" id="autobetWinPct" class="autobet-range" min="5" max="200" value="50" oninput="updateWinPctLabel()">
+              <span id="winPctLabel" class="autobet-pct-label">+50%</span>
+            </div>
+            <div class="autobet-row">
+              <span class="autobet-label">On Loss</span>
+              <select id="autobetOnLoss" class="autobet-select" onchange="toggleLossSlider()">
+                <option value="reset">Reset</option>
+                <option value="increase">Increase</option>
+                <option value="decrease">Decrease</option>
+              </select>
+            </div>
+            <div id="lossSliderRow" class="autobet-slider-row" style="display:none;">
+              <input type="range" id="autobetLossPct" class="autobet-range" min="5" max="200" value="100" oninput="updateLossPctLabel()">
+              <span id="lossPctLabel" class="autobet-pct-label">+100%</span>
+            </div>
+
+            <div class="autobet-divider"></div>
+            <div class="autobet-row">
+              <span class="autobet-label">Speed</span>
+              <span id="speedLabel" class="autobet-pct-label" style="color:#FFCC00;">Normal</span>
+            </div>
+            <div class="speed-buttons" id="speedButtons">
+              <button type="button" class="speed-btn" data-speed="0" onclick="setSpeed(0)">0.5x</button>
+              <button type="button" class="speed-btn active" data-speed="1" onclick="setSpeed(1)">1x</button>
+              <button type="button" class="speed-btn" data-speed="2" onclick="setSpeed(2)">2x</button>
+              <button type="button" class="speed-btn" data-speed="3" onclick="setSpeed(3)">5x</button>
+              <button type="button" class="speed-btn" data-speed="4" onclick="setSpeed(4)">MAX</button>
+            </div>
+          </div>
+
+          <div id="autobetStatus" class="autobet-status">
+            <div class="spinner"></div>
+            <span id="autobetStatusText">Auto: 0/10</span>
+            <button type="button" class="autobet-stop-btn" onclick="stopAutobet()">Stop</button>
+          </div>
+
+          <div class="rectangle-28" id="actionBtn" onclick="handleAction()">
+            <div class="place-bet" id="actionBtnText">PLACE BET</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-area">
+        <div class="game-top-bar">
+          <div class="game-info-boxes">
+            <div class="info-box">
+              <div class="info-box-value" id="diamondCount">0</div>
+              <div class="info-box-label">Diamond</div>
+            </div>
+            <div class="info-box">
+              <div class="info-box-value" id="minesCountInfo">0</div>
+              <div class="info-box-label">Mines</div>
+            </div>
+          </div>
+          <div class="mult-bar" id="multBar" style="display:none;">
+            <div class="mult-bar-inner">
+              <div class="mult-bar-value green" id="multBarCurrent">1.00x</div>
+              <img class="mult-bar-sep" src="polygon-10.svg" alt="" />
+              <div class="mult-bar-value gray" id="multBarNext">0.00x</div>
+              <img class="mult-bar-sep" src="polygon-20.svg" alt="" />
+              <div class="mult-bar-value gray" id="multBarProfit">0.00x</div>
+              <img class="mult-bar-sep" src="polygon-30.svg" alt="" />
+            </div>
+            <div class="mult-bar-fade"></div>
+          </div>
+        </div>
+        <div class="rectangle-7">
+          <div id="multInfo" class="mult-overlay" style="display:none;">
+            <div class="mult-overlay-item">
+              <span class="mult-overlay-label">MULTI</span>
+              <span class="mult-overlay-val" id="currentMultDisplay">1.00x</span>
+            </div>
+            <div class="mult-overlay-sep"></div>
+            <div class="mult-overlay-item">
+              <span class="mult-overlay-label">NEXT</span>
+              <span class="mult-overlay-val next" id="nextMultDisplay">1.03x</span>
+            </div>
+            <div class="mult-overlay-sep"></div>
+            <div class="mult-overlay-item">
+              <span class="mult-overlay-label">PROFIT</span>
+              <span class="mult-overlay-val profit" id="profitDisplay">+0.00</span>
+            </div>
+          </div>
+
+          <div class="mines-grid" id="minesGrid"></div>
+
+          <div id="gameResult" class="game-result">
+            <div class="result-label" id="resultLabel">YOU WON</div>
+            <div class="result-mult" id="resultMult">2.50x</div>
+            <div class="result-amount" id="resultAmount">
+              <span>$</span>
+              <span id="resultValue">250.00</span>
+            </div>
+          </div>
+
+          <div id="autobetChart" class="autobet-chart">
+            <div class="autobet-chart-header">
+              <span class="autobet-chart-title">Balance History</span>
+              <div class="autobet-chart-stats">
+                <span id="chartWins" class="autobet-chart-stat wins">W: 0</span>
+                <span id="chartLosses" class="autobet-chart-stat losses">L: 0</span>
+                <span id="chartNet" class="autobet-chart-stat net-pos">Net: 0.00</span>
+              </div>
+            </div>
+            <canvas id="chartCanvas" height="58"></canvas>
+          </div>
+
+          <img class="logo-1" src="logo-10.png" alt="logo" />
+        </div>
+        <div class="game-bottom-bar">
+          <div class="game-bottom-line"></div>
+          <img class="game-bottom-logo" src="logo-10.png" alt="logo" />
+        </div>
+      </div>
+    </div>
+
+    <div class="image-2"></div>
+  </div>
+
+  <div id="fairModal" class="modal-overlay" onclick="if(event.target===this)closeModal()">
+    <div class="pf-modal">
+      <div class="pf-header">
+        <div class="pf-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#808080" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Provably Fair
+        </div>
+        <div class="pf-close" onclick="closeModal()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#808080" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </div>
+      </div>
+      <div class="pf-tabs">
+        <div class="pf-tab active" onclick="switchTab('seeds')">Seeds</div>
+        <div class="pf-tab" onclick="switchTab('history')">History</div>
+      </div>
+      <div id="tabSeeds" class="pf-panel active">
+        <div class="pf-card">
+          <div class="pf-card-label">Server Seed Hash</div>
+          <div class="pf-field">
+            <span id="modalSeedHash" class="pf-field-value">loading...</span>
+            <div class="pf-copy" onclick="copyText('modalSeedHash')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="pf-card">
+          <div class="pf-card-label">Client Seed</div>
+          <div class="pf-field">
+            <input id="modalClientSeed" type="text" value="" class="pf-field-input">
+            <div class="pf-copy" onclick="randomizeClientSeed()" title="Randomize">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+            </div>
+            <div class="pf-copy" onclick="copyText('modalClientSeed')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="pf-card">
+          <div class="pf-card-row">
+            <span class="pf-card-label">Nonce</span>
+            <span id="modalNonce" class="pf-nonce">0</span>
+          </div>
+        </div>
+        <div class="pf-rotate" id="rotateSeedsBtn" onclick="rotateSeedsManual()">Rotate Seed & Reveal Previous</div>
+      </div>
+      <div id="tabHistory" class="pf-panel">
+        <div id="gameHistoryList" class="pf-history-list">
+          <div class="pf-empty">No games played yet</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const GEM_SVG = `<div class="gem-icon-wrapper">
+      <img class="tile-gem" src="livello-50.svg" alt="gem">
+      <img class="tile-sparkle sparkle-1" src="vector1.svg" alt="">
+      <img class="tile-sparkle sparkle-2" src="vector2.svg" alt="">
+      <img class="tile-sparkle sparkle-3" src="vector3.svg" alt="">
+    </div>`;
+
+    const MINE_SVG = `<div class="mine-icon-wrapper">
+      <img class="tile-mine" src="livello-10.svg" alt="mine">
+    </div>`;
+
+    function createExplosionHTML() {
+      return MINE_SVG;
+    }
+
+    const enc = new TextEncoder();
+    async function sha256(message) {
+      const hash = await crypto.subtle.digest('SHA-256', enc.encode(message));
+      return Array.from(new Uint8Array(hash), b => b.toString(16).padStart(2, '0')).join('');
+    }
+    async function hmacSHA256Verify(key, message) {
+      const cryptoKey = await crypto.subtle.importKey('raw', enc.encode(key), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+      return await crypto.subtle.sign('HMAC', cryptoKey, enc.encode(message));
+    }
+    async function verifyMinePositions(serverSeed, clientSeed, nonce, mineCount) {
+      const totalTiles = mineCount <= 24 ? 25 : (mineCount <= 35 ? 36 : (mineCount <= 48 ? 49 : 64));
+      const tiles = Array.from({ length: totalTiles }, (_, i) => i);
+      for (let i = tiles.length - 1; i > 0; i--) {
+        const hmac = await hmacSHA256Verify(serverSeed, `${clientSeed}:${nonce}:${i}`);
+        const view = new DataView(hmac);
+        const val = view.getUint32(0);
+        const j = val % (i + 1);
+        [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
+      }
+      return new Set(tiles.slice(0, mineCount));
+    }
+    function generateRandomHex(bytes = 32) {
+      const arr = new Uint8Array(bytes);
+      crypto.getRandomValues(arr);
+      return Array.from(arr, b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    let sessionToken = null;
+
+    async function api(endpoint, method = 'GET', body = null) {
+      const opts = {
+        method,
+        headers: { 'Content-Type': 'application/json' }
+      };
+      if (sessionToken) opts.headers['X-Session-Token'] = sessionToken;
+      if (body) opts.body = JSON.stringify(body);
+      const res = await fetch(endpoint, opts);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'request failed');
+      if (data.token) sessionToken = data.token;
+      return data;
+    }
+
+    let state = {
+      balance: 1000,
+      serverSeedHash: '',
+      clientSeed: '',
+      nonce: 0,
+      betAmount: 1, mineCount: 1,
+      isActive: false,
+      revealedTiles: new Set(),
+      currentMultiplier: 1,
+      nextMultiplier: 1,
+      gameHistory: [],
+      processing: false,
+      gridSize: 25
+    };
+
+    let gameMode = 'manual';
+
+    function calcMultiplier(revealed, mines) {
+      if (revealed === 0) return 1;
+      const total = state.gridSize;
+      let m = 1;
+      for (let i = 0; i < revealed; i++) m *= (total - i) / (total - mines - i);
+      return parseFloat((m * 0.99).toFixed(4));
+    }
+
+    function setGridSize(size) {
+      if (state.isActive) return;
+      state.gridSize = size;
+      const cols = Math.round(Math.sqrt(size));
+      const maxMines = size - 1;
+      const slider = document.getElementById('mineSlider');
+      slider.max = maxMines;
+      if (parseInt(slider.value) > maxMines) {
+        slider.value = Math.min(state.mineCount, maxMines);
+        state.mineCount = parseInt(slider.value);
+      }
+      document.getElementById('sliderMaxLabel').textContent = maxMines;
+      document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector(`.size-btn[data-size="${size}"]`).classList.add('active');
+      buildGrid();
+      updateSliderVisuals();
+    }
+
+    function halveBet() {
+      if (state.isActive) return;
+      const input = document.getElementById('betInput');
+      let val = parseFloat(input.value) || 0;
+      val = Math.max(0.01, Math.round(val / 2 * 100) / 100);
+      input.value = val.toFixed(2);
+    }
+    function doubleBet() {
+      if (state.isActive) return;
+      const input = document.getElementById('betInput');
+      let val = parseFloat(input.value) || 0;
+      val = Math.min(state.balance, Math.round(val * 2 * 100) / 100);
+      input.value = val.toFixed(2);
+    }
+
+    async function init() {
+      if (window.__LAUNCH_TOKEN__) {
+        sessionToken = window.__LAUNCH_TOKEN__;
+      }
+      try {
+        const data = await api('/api/state');
+        syncState(data);
+      } catch (e) {
+        console.error('Failed to connect to server:', e);
+      }
+      buildGrid();
+      updateUI();
+    }
+
+    function syncState(data) {
+      if (data.balance !== undefined) state.balance = data.balance;
+      if (data.serverSeedHash) state.serverSeedHash = data.serverSeedHash;
+      if (data.clientSeed) state.clientSeed = data.clientSeed;
+      if (data.nonce !== undefined) state.nonce = data.nonce;
+      if (data.isActive !== undefined) state.isActive = data.isActive;
+      if (data.betAmount !== undefined) state.betAmount = data.betAmount;
+      if (data.mineCount !== undefined) state.mineCount = data.mineCount;
+      if (data.currentMultiplier !== undefined) state.currentMultiplier = data.currentMultiplier;
+      if (data.nextMultiplier !== undefined) state.nextMultiplier = data.nextMultiplier;
+      if (data.revealedTiles) {
+        state.revealedTiles = new Set(data.revealedTiles.map(t => t.index));
+      }
+    }
+
+    function buildGrid() {
+      const grid = document.getElementById('minesGrid');
+      const total = state.gridSize;
+      const cols = Math.round(Math.sqrt(total));
+      grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+      grid.innerHTML = '';
+      for (let i = 0; i < total; i++) {
+        const border = document.createElement('div');
+        border.className = 'mine-cell-border';
+        border.id = `tile-border-${i}`;
+        const cell = document.createElement('button');
+        cell.className = 'mine-cell';
+        cell.id = `tile-${i}`;
+        cell.dataset.index = i;
+        cell.addEventListener('click', () => onTileClick(i));
+        border.appendChild(cell);
+        grid.appendChild(border);
+      }
+    }
+
+    function resetGrid() {
+      const total = state.gridSize;
+      for (let i = 0; i < total; i++) {
+        const border = document.getElementById(`tile-border-${i}`);
+        const cell = document.getElementById(`tile-${i}`);
+        if (!border || !cell) continue;
+        border.className = 'mine-cell-border';
+        cell.className = 'mine-cell';
+        cell.innerHTML = '';
+      }
+      document.getElementById('gameResult').classList.remove('show', 'win', 'loss');
+    }
+
+    function switchMode(mode) {
+      gameMode = mode;
+      const manual = document.getElementById('tabManual');
+      const auto = document.getElementById('tabAuto');
+      const abSettings = document.getElementById('autobetSettings');
+      
+      if (mode === 'manual') {
+        manual.classList.add('active');
+        auto.classList.remove('active');
+        abSettings.style.display = 'none';
+        if (autobet.running) stopAutobet();
+        autobet.enabled = false;
+      } else {
+        auto.classList.add('active');
+        manual.classList.remove('active');
+        abSettings.style.display = 'block';
+        autobet.enabled = true;
+      }
+      updateUI();
+    }
+
+    async function handleAction() {
+      if (state.processing) return;
+      if (state.isActive) { await cashOut(); return; }
+      if (autobet.enabled && !autobet.running) { await startAutobet(); return; }
+      await startGame();
+    }
+
+    async function startGame() {
+      const bet = parseFloat(document.getElementById('betInput').value) || 0;
+      if (bet <= 0 || bet > state.balance || bet < 0.01) return;
+
+      state.processing = true;
+      const mines = parseInt(document.getElementById('mineSlider').value);
+
+      try {
+        const data = await api('/api/start', 'POST', { bet, mines, gridSize: state.gridSize });
+        syncState(data);
+        state.betAmount = bet;
+        state.mineCount = mines;
+        state.revealedTiles = new Set();
+        state.currentMultiplier = 1;
+        _revealGameId++;
+        resetGrid();
+        for (let i = 0; i < state.gridSize; i++) document.getElementById(`tile-border-${i}`).classList.add('clickable');
+      } catch (e) {
+        console.error('Start game failed:', e);
+      }
+
+      state.processing = false;
+      updateUI();
+    }
+
+    async function onTileClick(index) {
+      if (!state.isActive || state.processing) return;
+      if (state.revealedTiles.has(index)) return;
+
+      state.processing = true;
+
+      try {
+        const data = await api('/api/reveal', 'POST', { index });
+        const border = document.getElementById(`tile-border-${index}`);
+        const cell = document.getElementById(`tile-${index}`);
+        border.classList.remove('clickable');
+
+        if (data.result === 'mine') {
+          _lastRevealWasWin = false;
+          cell.className = 'mine-cell mine hit';
+          border.className = 'mine-cell-border mine-border';
+          cell.innerHTML = createExplosionHTML();
+          state.revealedTiles.add(index);
+          syncState(data);
+          state.processing = false;
+          await new Promise(r => setTimeout(r, 400));
+          revealAllTiles(index, new Set(data.minePositions));
+          showResult(false);
+          addToLocalHistory(data, false);
+          updateUI();
+
+        } else if (data.result === 'safe') {
+          cell.className = 'mine-cell gem';
+          border.className = 'mine-cell-border gem-border';
+          cell.innerHTML = GEM_SVG;
+          state.revealedTiles.add(index);
+          syncState(data);
+          state.processing = false;
+          updateUI();
+
+        } else if (data.result === 'cashout') {
+          _lastRevealWasWin = true;
+          cell.className = 'mine-cell gem';
+          border.className = 'mine-cell-border gem-border';
+          cell.innerHTML = GEM_SVG;
+          state.revealedTiles.add(index);
+          syncState(data);
+          state.processing = false;
+          handleCashoutResponse(data);
+          updateUI();
+        }
+      } catch (e) {
+        console.error('Reveal failed:', e);
+        state.processing = false;
+      }
+    }
+
+    function handleCashoutResponse(data) {
+      for (let i = 0; i < state.gridSize; i++) document.getElementById(`tile-border-${i}`).classList.remove('clickable');
+      state.currentMultiplier = data.multiplier || state.currentMultiplier;
+      showResult(true);
+      revealAllTilesGeneric(new Set(data.minePositions));
+      addToLocalHistory(data, true);
+    }
+
+    async function cashOut() {
+      if (!state.isActive) return;
+      if (state.revealedTiles.size === 0) return;
+
+      state.processing = true;
+      try {
+        const data = await api('/api/cashout', 'POST');
+        syncState(data);
+        state.currentMultiplier = data.multiplier || state.currentMultiplier;
+        for (let i = 0; i < state.gridSize; i++) document.getElementById(`tile-border-${i}`).classList.remove('clickable');
+        showResult(true);
+        revealAllTilesGeneric(new Set(data.minePositions));
+        addToLocalHistory(data, true);
+      } catch (e) {
+        console.error('Cashout failed:', e);
+      }
+      state.processing = false;
+      updateUI();
+    }
+
+    async function addToLocalHistory(data, won) {
+      if (!data.serverSeed) return;
+      const hash = await sha256(data.serverSeed);
+      const entry = {
+        serverSeed: data.serverSeed,
+        serverSeedHash: hash,
+        clientSeed: state.clientSeed,
+        nonce: state.nonce,
+        mineCount: state.mineCount,
+        bet: state.betAmount,
+        multiplier: won ? (data.multiplier || state.currentMultiplier) : 0,
+        payout: won ? (data.payout || 0) : 0,
+        won,
+        minePositions: data.minePositions || [],
+        timestamp: Date.now()
+      };
+      state.gameHistory.unshift(entry);
+      if (state.gameHistory.length > 50) state.gameHistory.pop();
+    }
+
+    let _revealGameId = 0;
+    let _lastRevealWasWin = false;
+
+    function revealAllTiles(hitIndex, minePositions) {
+      const gameId = ++_revealGameId;
+      for (let i = 0; i < state.gridSize; i++) {
+        if (i === hitIndex) continue;
+        const border = document.getElementById(`tile-border-${i}`);
+        const cell = document.getElementById(`tile-${i}`);
+        border.classList.remove('clickable');
+        if (state.revealedTiles.has(i)) continue;
+        setTimeout(() => {
+          if (_revealGameId !== gameId) return;
+          if (minePositions.has(i)) {
+            cell.className = 'mine-cell mine-dim';
+            border.className = 'mine-cell-border mine-dim-border';
+            cell.innerHTML = createExplosionHTML();
+          } else {
+            cell.className = 'mine-cell gem-dim';
+            border.className = 'mine-cell-border gem-dim-border';
+            cell.innerHTML = GEM_SVG;
+          }
+        }, 100 + Math.random() * 300);
+      }
+    }
+
+    function revealAllTilesGeneric(minePositions) {
+      const gameId = ++_revealGameId;
+      for (let i = 0; i < state.gridSize; i++) {
+        if (state.revealedTiles.has(i)) continue;
+        const border = document.getElementById(`tile-border-${i}`);
+        const cell = document.getElementById(`tile-${i}`);
+        setTimeout(() => {
+          if (_revealGameId !== gameId) return;
+          if (minePositions.has(i)) {
+            cell.className = 'mine-cell mine-dim';
+            border.className = 'mine-cell-border mine-dim-border';
+            cell.innerHTML = createExplosionHTML();
+          } else {
+            cell.className = 'mine-cell gem-dim';
+            border.className = 'mine-cell-border gem-dim-border';
+            cell.innerHTML = GEM_SVG;
+          }
+        }, 100 + Math.random() * 300);
+      }
+    }
+
+    function showResult(won) {
+      const el = document.getElementById('gameResult');
+      const label = document.getElementById('resultLabel');
+      const mult = document.getElementById('resultMult');
+      const val = document.getElementById('resultValue');
+      el.classList.remove('win', 'loss');
+      if (won) {
+        const payout = Math.round(state.betAmount * state.currentMultiplier * 100) / 100;
+        label.textContent = 'YOU WON';
+        mult.textContent = state.currentMultiplier.toFixed(2) + 'x';
+        val.textContent = '+' + payout.toFixed(2);
+        el.classList.add('win');
+      } else {
+        label.textContent = 'MINE HIT';
+        mult.textContent = '0.00x';
+        val.textContent = '-' + state.betAmount.toFixed(2);
+        el.classList.add('loss');
+      }
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 2500);
+    }
+
+    function updateUI() {
+      document.getElementById('balanceDisplay').textContent = formatNumber(state.balance);
+      const actionBtn = document.getElementById('actionBtn');
+      const actionText = document.getElementById('actionBtnText');
+      const multInfo = document.getElementById('multInfo');
+
+      const diamondEl = document.getElementById('diamondCount');
+      const minesInfoEl = document.getElementById('minesCountInfo');
+      const infoBoxes = document.querySelectorAll('.info-box');
+      if (state.isActive) {
+        infoBoxes.forEach(b => b.classList.add('visible'));
+        diamondEl.textContent = state.revealedTiles.size;
+        minesInfoEl.textContent = state.mineCount;
+      } else if (state.revealedTiles.size > 0) {
+        infoBoxes.forEach(b => b.classList.add('visible'));
+        diamondEl.textContent = state.revealedTiles.size;
+        minesInfoEl.textContent = state.mineCount;
+      } else {
+        infoBoxes.forEach(b => b.classList.remove('visible'));
+      }
+
+      const multBarEl = document.getElementById('multBar');
+      if (state.isActive) {
+        if (state.revealedTiles.size > 0) {
+          const payout = Math.round(state.betAmount * state.currentMultiplier * 100) / 100;
+          const profit = Math.round((payout - state.betAmount) * 100) / 100;
+          actionBtn.className = 'rectangle-28 cashout-btn';
+          actionText.textContent = `CASH OUT  ${state.currentMultiplier.toFixed(2)}x  ($${payout.toFixed(2)})`;
+          
+          multInfo.style.display = 'none';
+          const nextMult = state.nextMultiplier || calcMultiplier(state.revealedTiles.size + 1, state.mineCount);
+
+          multBarEl.style.display = 'flex';
+          document.getElementById('multBarCurrent').textContent = state.currentMultiplier.toFixed(2) + 'x';
+          document.getElementById('multBarNext').textContent = nextMult.toFixed(2) + 'x';
+          const profitText = (profit >= 0 ? '+' : '') + profit.toFixed(2) + 'x';
+          document.getElementById('multBarProfit').textContent = profitText;
+
+          document.getElementById('currentMultDisplay').textContent = state.currentMultiplier.toFixed(2) + 'x';
+          document.getElementById('nextMultDisplay').textContent = nextMult.toFixed(2) + 'x';
+          const profitEl = document.getElementById('profitDisplay');
+          profitEl.textContent = (profit >= 0 ? '+' : '') + profit.toFixed(2);
+          profitEl.className = 'mult-overlay-val ' + (profit >= 0 ? 'profit' : 'loss');
+        } else {
+          actionBtn.className = 'rectangle-28 disabled-btn';
+          actionText.textContent = 'PICK A TILE';
+          multInfo.style.display = 'none';
+          multBarEl.style.display = 'flex';
+          document.getElementById('multBarCurrent').textContent = '1.00x';
+          const nextMult = state.nextMultiplier || calcMultiplier(1, state.mineCount);
+          document.getElementById('multBarNext').textContent = nextMult.toFixed(2) + 'x';
+          document.getElementById('multBarProfit').textContent = '+0.00x';
+
+          document.getElementById('currentMultDisplay').textContent = '1.00x';
+          document.getElementById('nextMultDisplay').textContent = nextMult.toFixed(2) + 'x';
+          document.getElementById('profitDisplay').textContent = '+0.00';
+          document.getElementById('profitDisplay').className = 'mult-overlay-val profit';
+        }
+      } else {
+        actionBtn.className = 'rectangle-28';
+        if (autobet.running) {
+          actionText.textContent = 'AUTO RUNNING...';
+        } else if (autobet.enabled) {
+          actionText.textContent = 'START AUTO';
+        } else {
+          actionText.textContent = 'PLACE BET';
+        }
+        multInfo.style.display = 'none';
+        multBarEl.style.display = 'none';
+      }
+      updateSliderVisuals();
+    }
+
+    function updateSliderVisuals() {
+      const slider = document.getElementById('mineSlider');
+      const val = parseInt(slider.value);
+      const maxMines = state.gridSize - 1;
+      const pct = ((val - 1) / (maxMines - 1)) * 100;
+      const fill = document.getElementById('sliderFill');
+      const thumb = document.getElementById('sliderThumb');
+      const display = document.getElementById('mineCountDisplay');
+
+      fill.style.width = pct + '%';
+      thumb.style.left = pct + '%';
+      display.textContent = val;
+
+      const r = Math.round(255);
+      const g = Math.round(204 - (204 - 68) * (pct / 100));
+      const b = Math.round(0 + 68 * (pct / 100));
+      const color = `rgb(${r},${g},${b})`;
+
+      fill.style.background = `linear-gradient(90deg, rgba(255,204,0,0.3) 0%, rgba(${r},${g},${b},0.4) 100%)`;
+      thumb.style.background = color;
+      display.style.color = color;
+    }
+
+    function formatNumber(n) {
+      return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function adjustBet(pct) {
+      if (state.isActive) return;
+      const input = document.getElementById('betInput');
+      let val = Math.round(state.balance * pct * 100) / 100;
+      val = Math.max(0.01, Math.min(val, state.balance));
+      input.value = val.toFixed(2);
+    }
+    function setBetMax() {
+      if (state.isActive) return;
+      document.getElementById('betInput').value = state.balance.toFixed(2);
+    }
+    function setBet(amount) {
+      if (state.isActive) return;
+      if (amount === 0) amount = 0.01;
+      document.getElementById('betInput').value = Math.min(amount, state.balance).toFixed(2);
+    }
+    async function resetBalance() {
+      if (state.isActive) return;
+      try {
+        const data = await api('/api/balance/refresh', 'POST');
+        syncState(data);
+      } catch (e) {
+        try {
+          const data = await api('/api/balance/reset', 'POST');
+          syncState(data);
+        } catch (e2) { console.error('Balance update failed:', e2); }
+      }
+      updateUI();
+    }
+    function toggleSound() { }
+
+    function setMinePreset(val) {
+      if (state.isActive) return;
+      const slider = document.getElementById('mineSlider');
+      const maxMines = parseInt(slider.max);
+      let mines;
+      if (val === 'max') mines = maxMines;
+      else mines = Math.min(val, maxMines);
+      slider.value = mines;
+      state.mineCount = mines;
+      updateSliderVisuals();
+    }
+
+    document.getElementById('mineSlider').addEventListener('input', function() {
+      if (state.isActive) return;
+      state.mineCount = parseInt(this.value);
+      updateSliderVisuals();
+    });
+
+    function openModal() {
+      document.getElementById('modalSeedHash').textContent = state.serverSeedHash;
+      document.getElementById('modalClientSeed').value = state.clientSeed;
+      document.getElementById('modalNonce').textContent = state.nonce;
+      renderHistory();
+      document.getElementById('fairModal').classList.add('open');
+    }
+    async function closeModal() {
+      const newCS = document.getElementById('modalClientSeed').value.trim();
+      if (newCS && !state.isActive && newCS !== state.clientSeed) {
+        try {
+          const data = await api('/api/seeds/client', 'POST', { clientSeed: newCS });
+          syncState(data);
+        } catch (e) { console.error('Set client seed failed:', e); }
+      }
+      document.getElementById('fairModal').classList.remove('open');
+    }
+    async function randomizeClientSeed() {
+      if (state.isActive) return;
+      const newSeed = generateRandomHex(16);
+      try {
+        const data = await api('/api/seeds/client', 'POST', { clientSeed: newSeed });
+        syncState(data);
+        document.getElementById('modalClientSeed').value = state.clientSeed;
+      } catch (e) { console.error('Randomize seed failed:', e); }
+    }
+    async function rotateSeedsManual() {
+      if (state.isActive) return;
+      try {
+        const data = await api('/api/seeds/rotate', 'POST');
+        syncState(data);
+        if (data.previousServerSeed) {
+          const btn = document.getElementById('rotateSeedsBtn');
+          btn.textContent = 'Rotated! Previous seed revealed.';
+          setTimeout(() => { btn.textContent = 'Rotate Seed & Reveal Previous'; }, 2000);
+        }
+        document.getElementById('modalSeedHash').textContent = state.serverSeedHash;
+        document.getElementById('modalNonce').textContent = state.nonce;
+      } catch (e) { console.error('Rotate failed:', e); }
+    }
+    function copyText(elementId) {
+      const el = document.getElementById(elementId);
+      const text = el.value || el.textContent;
+      navigator.clipboard.writeText(text).catch(() => {});
+    }
+    function switchTab(tab) {
+      document.querySelectorAll('.pf-tab').forEach(function(t) { t.classList.remove('active'); });
+      document.querySelectorAll('.pf-panel').forEach(function(p) { p.classList.remove('active'); });
+      if (tab === 'seeds') {
+        document.querySelectorAll('.pf-tab')[0].classList.add('active');
+        document.getElementById('tabSeeds').classList.add('active');
+      } else {
+        document.querySelectorAll('.pf-tab')[1].classList.add('active');
+        document.getElementById('tabHistory').classList.add('active');
+        loadHistory();
+      }
+    }
+    async function loadHistory() {
+      try {
+        const data = await api('/api/history');
+        if (data.history) state.gameHistory = data.history;
+        renderHistory();
+      } catch (e) { console.error('Load history failed:', e); }
+    }
+    function renderHistory() {
+      const list = document.getElementById('gameHistoryList');
+      if (state.gameHistory.length === 0) {
+        list.innerHTML = `<div class="pf-empty">No games played yet</div>`;
+        return;
+      }
+      list.innerHTML = state.gameHistory.map((g, idx) => `
+        <div class="history-item">
+          <div class="history-header">
+            <span class="history-game-num">Game #${state.gameHistory.length - idx}</span>
+            <span class="history-result ${g.won ? 'win' : 'loss'}">${g.won ? '+' + g.payout.toFixed(2) : '-' + g.bet.toFixed(2)}</span>
+          </div>
+          <div class="history-detail">Bet: <span>${g.bet.toFixed(2)}</span> | Mines: <span>${g.mineCount}</span> | Multi: <span>${(g.multiplier || 0).toFixed(2)}x</span></div>
+          <div class="history-detail">Server Seed: <span style="word-break:break-all;">${g.serverSeed}</span></div>
+          <button class="verify-btn" onclick="verifyGame(${idx})">Verify</button>
+          <div id="verify-result-${idx}" class="verify-result"></div>
+        </div>
+      `).join('');
+    }
+    async function verifyGame(idx) {
+      const g = state.gameHistory[idx];
+      const resultEl = document.getElementById(`verify-result-${idx}`);
+      try {
+        const computedHash = await sha256(g.serverSeed);
+        const hashMatch = computedHash === g.serverSeedHash;
+        const computedMines = await verifyMinePositions(g.serverSeed, g.clientSeed, g.nonce, g.mineCount);
+        const minesMatch = g.minePositions.length === computedMines.size && g.minePositions.every(p => computedMines.has(p));
+        if (hashMatch && minesMatch) {
+          resultEl.className = 'verify-result show pass';
+          resultEl.innerHTML = `&#10003; Verified! Hash and mine positions correct.`;
+        } else {
+          resultEl.className = 'verify-result show fail';
+          resultEl.innerHTML = `&#10007; Verification failed! Hash: ${hashMatch}, Mines: ${minesMatch}`;
+        }
+      } catch (e) {
+        resultEl.className = 'verify-result show fail';
+        resultEl.textContent = 'Error: ' + e.message;
+      }
+    }
+
+    let autobet = { enabled: false, running: false, rounds: 10, played: 0,
+      cashoutAt: 1.5, onWin: 'reset', onLoss: 'reset',
+      winPct: 50, lossPct: 100, baseBet: 1, stopped: false, speed: 1 };
+
+    const SPEED_CONFIG = {
+      0: { tile: 600, round: 2500, label: 'Slow' },
+      1: { tile: 300, round: 1500, label: 'Normal' },
+      2: { tile: 120, round: 800, label: 'Fast' },
+      3: { tile: 50, round: 400, label: 'Very Fast' },
+      4: { tile: 10, round: 150, label: 'MAX' }
+    };
+
+    function setSpeed(level) {
+      autobet.speed = level;
+      document.querySelectorAll('.speed-btn').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelector(`.speed-btn[data-speed="${level}"]`).classList.add('active');
+      document.getElementById('speedLabel').textContent = SPEED_CONFIG[level].label;
+    }
+
+    function toggleWinSlider() {
+      const sel = document.getElementById('autobetOnWin').value;
+      document.getElementById('winSliderRow').style.display = (sel !== 'reset') ? 'flex' : 'none';
+      updateWinPctLabel();
+    }
+    function toggleLossSlider() {
+      const sel = document.getElementById('autobetOnLoss').value;
+      document.getElementById('lossSliderRow').style.display = (sel !== 'reset') ? 'flex' : 'none';
+      updateLossPctLabel();
+    }
+    function updateWinPctLabel() {
+      const val = document.getElementById('autobetWinPct').value;
+      const sel = document.getElementById('autobetOnWin').value;
+      document.getElementById('winPctLabel').textContent = (sel === 'decrease' ? '-' : '+') + val + '%';
+    }
+    function updateLossPctLabel() {
+      const val = document.getElementById('autobetLossPct').value;
+      const sel = document.getElementById('autobetOnLoss').value;
+      document.getElementById('lossPctLabel').textContent = (sel === 'decrease' ? '-' : '+') + val + '%';
+    }
+
+    function stopAutobet() {
+      autobet.running = false;
+      autobet.stopped = true;
+      autobet.played = 0;
+      document.getElementById('autobetStatus').classList.remove('active');
+      updateUI();
+      setTimeout(() => { if (!autobet.running) hideChart(); }, 5000);
+    }
+
+    async function startAutobet() {
+      if (autobet.running || !autobet.enabled) return;
+      autobet.rounds = parseInt(document.getElementById('autobetRounds').value) || 10;
+      autobet.cashoutAt = parseFloat(document.getElementById('autobetCashout').value) || 1.5;
+      autobet.onWin = document.getElementById('autobetOnWin').value;
+      autobet.onLoss = document.getElementById('autobetOnLoss').value;
+      autobet.winPct = parseInt(document.getElementById('autobetWinPct').value) || 50;
+      autobet.lossPct = parseInt(document.getElementById('autobetLossPct').value) || 100;
+      autobet.baseBet = parseFloat(document.getElementById('betInput').value) || 1;
+      autobet.played = 0;
+      autobet.stopped = false;
+      autobet.running = true;
+      document.getElementById('autobetStatus').classList.add('active');
+      updateAutobetStatus();
+      resetChart();
+      await runAutobetRound();
+    }
+
+    async function runAutobetRound() {
+      if (autobet.stopped || !autobet.running || autobet.played >= autobet.rounds) { stopAutobet(); return; }
+      const bet = parseFloat(document.getElementById('betInput').value) || 0;
+      if (bet <= 0 || bet > state.balance || bet < 0.01) { stopAutobet(); return; }
+      await startGame();
+      if (!state.isActive) { stopAutobet(); return; }
+      await autobetPickTiles();
+    }
+
+    async function autobetPickTiles() {
+      if (autobet.stopped || !autobet.running || !state.isActive) return;
+      const available = [];
+      for (let i = 0; i < state.gridSize; i++) { if (!state.revealedTiles.has(i)) available.push(i); }
+      if (available.length === 0) return;
+      const pickIndex = available[Math.floor(Math.random() * available.length)];
+      const cfg = SPEED_CONFIG[autobet.speed] || SPEED_CONFIG[1];
+      const jitter = autobet.speed <= 1 ? Math.random() * 100 : 0;
+      await new Promise(r => setTimeout(r, cfg.tile + jitter));
+      if (autobet.stopped || !autobet.running) return;
+      await onTileClick(pickIndex);
+
+      if (!state.isActive) {
+        const wasWin = _lastRevealWasWin;
+        autobet.played++;
+        updateAutobetStatus();
+        recordChartPoint(wasWin);
+        adjustBetAfterResult(wasWin);
+        await new Promise(r => setTimeout(r, cfg.round));
+        if (autobet.running && !autobet.stopped) await runAutobetRound();
+        return;
+      }
+      if (state.currentMultiplier >= autobet.cashoutAt) {
+        await cashOut();
+        autobet.played++;
+        updateAutobetStatus();
+        recordChartPoint(true);
+        adjustBetAfterResult(true);
+        await new Promise(r => setTimeout(r, cfg.round));
+        if (autobet.running && !autobet.stopped) await runAutobetRound();
+        return;
+      }
+      await autobetPickTiles();
+    }
+
+    function adjustBetAfterResult(won) {
+      const action = won ? autobet.onWin : autobet.onLoss;
+      const pct = won ? autobet.winPct : autobet.lossPct;
+      let currentBet = parseFloat(document.getElementById('betInput').value) || autobet.baseBet;
+      if (action === 'reset') currentBet = autobet.baseBet;
+      else if (action === 'increase') currentBet = Math.round(currentBet * (1 + pct / 100) * 100) / 100;
+      else if (action === 'decrease') currentBet = Math.round(currentBet * (1 - pct / 100) * 100) / 100;
+      currentBet = Math.max(0.01, Math.min(currentBet, state.balance));
+      document.getElementById('betInput').value = currentBet.toFixed(2);
+    }
+    function updateAutobetStatus() {
+      document.getElementById('autobetStatusText').textContent = `Auto: ${autobet.played}/${autobet.rounds}`;
+    }
+
+    let chartData = { balances: [], wins: 0, losses: 0, startBalance: 0 };
+    function resetChart() {
+      chartData = { balances: [state.balance], wins: 0, losses: 0, startBalance: state.balance };
+      document.getElementById('autobetChart').classList.add('active');
+      drawChart(); updateChartStats();
+    }
+    function recordChartPoint(won) {
+      chartData.balances.push(state.balance);
+      if (won) chartData.wins++; else chartData.losses++;
+      drawChart(); updateChartStats();
+    }
+    function hideChart() { document.getElementById('autobetChart').classList.remove('active'); }
+    function updateChartStats() {
+      document.getElementById('chartWins').textContent = 'W: ' + chartData.wins;
+      document.getElementById('chartLosses').textContent = 'L: ' + chartData.losses;
+      const net = state.balance - chartData.startBalance;
+      const netEl = document.getElementById('chartNet');
+      netEl.textContent = 'Net: ' + (net >= 0 ? '+' : '') + net.toFixed(2);
+      netEl.className = 'autobet-chart-stat ' + (net >= 0 ? 'net-pos' : 'net-neg');
+    }
+    function drawChart() {
+      const canvas = document.getElementById('chartCanvas');
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = 58 * dpr;
+      ctx.scale(dpr, dpr);
+      const w = rect.width, h = 58;
+      ctx.clearRect(0, 0, w, h);
+      const data = chartData.balances;
+      if (data.length < 2) return;
+      const min = Math.min(...data), max = Math.max(...data);
+      const range = max - min || 1, padY = 4;
+      const startY = h - padY - ((chartData.startBalance - min) / range) * (h - padY * 2);
+      ctx.strokeStyle = 'rgba(255,255,255,0.06)'; ctx.lineWidth = 1;
+      ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(0, startY); ctx.lineTo(w, startY); ctx.stroke(); ctx.setLineDash([]);
+      ctx.lineWidth = 1.5; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+      const lastVal = data[data.length - 1];
+      const isUp = lastVal >= chartData.startBalance;
+      ctx.beginPath();
+      for (let i = 0; i < data.length; i++) {
+        const x = (i / (data.length - 1)) * w;
+        const y = h - padY - ((data[i] - min) / range) * (h - padY * 2);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = isUp ? '#FFCC00' : '#ef4444'; ctx.stroke();
+      const lastX = w, lastY2 = h - padY - ((data[data.length - 1] - min) / range) * (h - padY * 2);
+      ctx.lineTo(lastX, h); ctx.lineTo(0, h); ctx.closePath();
+      const grad = ctx.createLinearGradient(0, 0, 0, h);
+      if (isUp) { grad.addColorStop(0, 'rgba(255,204,0,0.15)'); grad.addColorStop(1, 'rgba(255,204,0,0)'); }
+      else { grad.addColorStop(0, 'rgba(239,68,68,0.15)'); grad.addColorStop(1, 'rgba(239,68,68,0)'); }
+      ctx.fillStyle = grad; ctx.fill();
+
+      const startIdx = Math.max(0, data.length - 30);
+      for (let i = startIdx; i < data.length; i++) {
+        const x = (i / (data.length - 1)) * w;
+        const y = h - padY - ((data[i] - min) / range) * (h - padY * 2);
+        const dotIsWin = i > 0 && data[i] > data[i - 1];
+        ctx.beginPath();
+        ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = i === 0 ? 'rgba(255,255,255,0.4)' : (dotIsWin ? '#FFCC00' : '#ef4444');
+        ctx.fill();
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT') return;
+      if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); handleAction(); }
+    });
+
+    init();
+  </script>
+</body>
+</html>
