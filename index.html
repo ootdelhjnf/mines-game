@@ -52,9 +52,14 @@
           <img class="ic-round-verified-user" src="ic-round-verified-user0.svg" alt="verified" />
           <div class="provably-fair">Provably fair</div>
         </div>
-        <div class="rectangle-29" onclick="toggleSound()" style="cursor:pointer;">
-          <div class="lets-icons-sound-max-fill">
-            <img class="group" src="group0.svg" alt="sound" />
+        <div class="sound-control">
+          <div class="rectangle-29" onclick="toggleVolumeSlider()" style="cursor:pointer;">
+            <div class="lets-icons-sound-max-fill">
+              <img class="group" id="soundIcon" src="group0.svg" alt="sound" />
+            </div>
+          </div>
+          <div class="volume-slider-popup" id="volumePopup">
+            <input type="range" min="0" max="100" value="50" class="volume-slider" id="volumeSlider" oninput="setVolume(this.value)">
           </div>
         </div>
       </div>
@@ -362,20 +367,40 @@
 
   <script>
     const SFX = {
-      gem: new Audio('gem-collect.wav'),
+      gem: new Audio('bet-place.wav'),
       mine: new Audio('mine-hit.wav'),
       bet: new Audio('bet-place.wav')
     };
-    SFX.gem.volume = 0.5;
-    SFX.mine.volume = 0.6;
-    SFX.bet.volume = 0.4;
+    let sfxVolume = 0.5;
+    function applyVolume() {
+      SFX.gem.volume = sfxVolume;
+      SFX.mine.volume = sfxVolume;
+      SFX.bet.volume = sfxVolume;
+    }
+    applyVolume();
     function playSound(name) {
       try {
+        if (sfxVolume === 0) return;
         const s = SFX[name];
         s.currentTime = 0;
         s.play().catch(function() {});
       } catch(e) {}
     }
+    function toggleVolumeSlider() {
+      document.getElementById('volumePopup').classList.toggle('open');
+    }
+    function setVolume(val) {
+      sfxVolume = parseInt(val) / 100;
+      applyVolume();
+      var icon = document.getElementById('soundIcon');
+      icon.style.opacity = sfxVolume === 0 ? '0.3' : '1';
+    }
+    document.addEventListener('click', function(e) {
+      var ctrl = document.querySelector('.sound-control');
+      if (ctrl && !ctrl.contains(e.target)) {
+        document.getElementById('volumePopup').classList.remove('open');
+      }
+    });
 
     const GEM_SVG = `<div class="gem-icon-wrapper">
       <img class="tile-gem" src="livello-50.svg" alt="gem">
@@ -910,7 +935,7 @@
       }
       updateUI();
     }
-    function toggleSound() { }
+    function toggleSound() { toggleVolumeSlider(); }
 
     function setMinePreset(val) {
       if (state.isActive) return;
