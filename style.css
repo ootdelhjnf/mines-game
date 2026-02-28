@@ -1459,3 +1459,16 @@ body {
   .mult-bar-value { font-size: 14px; }
   .game-bottom-bar { height: 40px; }
 }
+
+.demo-info {
+  position: fixed;
+  bottom: 8px;
+  right: 12px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 9px;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.18);
+  text-align: right;
+  pointer-events: none;
+  z-index: 50;
+}

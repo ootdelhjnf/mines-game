@@ -361,6 +361,22 @@
   </div>
 
   <script>
+    const SFX = {
+      gem: new Audio('gem-collect.wav'),
+      mine: new Audio('mine-hit.wav'),
+      bet: new Audio('bet-place.wav')
+    };
+    SFX.gem.volume = 0.5;
+    SFX.mine.volume = 0.6;
+    SFX.bet.volume = 0.4;
+    function playSound(name) {
+      try {
+        const s = SFX[name];
+        s.currentTime = 0;
+        s.play().catch(function() {});
+      } catch(e) {}
+    }
+
     const GEM_SVG = `<div class="gem-icon-wrapper">
       <img class="tile-gem" src="livello-50.svg" alt="gem">
       <img class="tile-sparkle sparkle-1" src="vector1.svg" alt="">
@@ -583,6 +599,7 @@
         state.currentMultiplier = 1;
         _revealGameId++;
         resetGrid();
+        playSound('bet');
         for (let i = 0; i < state.gridSize; i++) document.getElementById(`tile-border-${i}`).classList.add('clickable');
       } catch (e) {
         console.error('Start game failed:', e);
@@ -609,6 +626,7 @@
           cell.className = 'mine-cell mine hit';
           border.className = 'mine-cell-border mine-border';
           cell.innerHTML = createExplosionHTML();
+          playSound('mine');
           state.revealedTiles.add(index);
           syncState(data);
           state.processing = false;
@@ -622,6 +640,7 @@
           cell.className = 'mine-cell gem';
           border.className = 'mine-cell-border gem-border';
           cell.innerHTML = GEM_SVG;
+          playSound('gem');
           state.revealedTiles.add(index);
           syncState(data);
           state.processing = false;
@@ -632,6 +651,7 @@
           cell.className = 'mine-cell gem';
           border.className = 'mine-cell-border gem-border';
           cell.innerHTML = GEM_SVG;
+          playSound('gem');
           state.revealedTiles.add(index);
           syncState(data);
           state.processing = false;
@@ -1211,6 +1231,17 @@
     });
 
     init();
+
+    (function() {
+      var sid = crypto.randomUUID().split('-').slice(0,2).join('');
+      var ts = new Date().toISOString().replace('T',' ').slice(0,19);
+      var el = document.createElement('div');
+      el.className = 'demo-info';
+      el.innerHTML = 'DEMO PRESENTATION BUILD — NOT FOR PRODUCTION USE<br>'
+        + 'Session: ' + sid + ' | Init: ' + ts + ' UTC<br>'
+        + 'Runtime: Node.js ' + 'v18+ | Protocol: Provably Fair HMAC-SHA256';
+      document.body.appendChild(el);
+    })();
   </script>
 </body>
 </html>
